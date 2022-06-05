@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class BallControl : MonoBehaviour
 {
@@ -13,6 +14,8 @@ public class BallControl : MonoBehaviour
     public float jumpForce;
     bool jumpHeld;
     public Transform spawnLoc;
+    float slideAcceleration;
+    public CinemachineVirtualCamera vCam;
 
     private void Start()
     {
@@ -74,6 +77,33 @@ public class BallControl : MonoBehaviour
         if (collision.gameObject.tag == "DeathZone")
         {
             transform.position = spawnLoc.position;
+        }
+        else if (collision.gameObject.tag == "Slide")
+        {
+            slideAcceleration = 0f;
+            vCam.m_Lens.FieldOfView = 40;
+        }
+    }
+
+    void OnTriggerStay(Collider collision)
+    {
+        if (collision.gameObject.tag == "Slide")
+        {
+            if (slideAcceleration < 20f)
+            {
+                vCam.m_Lens.FieldOfView += .1f;
+                slideAcceleration += .01f;
+            }
+            rigidbody.AddForce(Vector3.down * speed * 10f * slideAcceleration * Time.deltaTime);
+        }
+    }
+
+    void OnTriggerExit(Collider collision)
+    {
+        if (collision.gameObject.tag == "Slide")
+        {
+            slideAcceleration = 0f;
+            vCam.m_Lens.FieldOfView = 40;
         }
     }
 }
