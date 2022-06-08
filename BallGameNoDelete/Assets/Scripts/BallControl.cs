@@ -13,14 +13,16 @@ public class BallControl : MonoBehaviour
     public float jumpDuration;
     public float jumpForce;
     bool jumpHeld;
-    public Transform spawnLoc;
+    private Vector3 spawnLoc;
     float slideAcceleration;
     public CinemachineVirtualCamera vCam;
+    public float defaultFoV;
 
     private void Start()
     {
         rigidbody = gameObject.GetComponent<Rigidbody>();
         distToGround = GetComponent<Collider>().bounds.extents.y;
+        spawnLoc = gameObject.transform.position;
     }
 
     private void Update()
@@ -47,7 +49,7 @@ public class BallControl : MonoBehaviour
         }
 
         // check if grounded
-        isGrounded = Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+        isGrounded = Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.4f);
 
         // jumping
         if (isGrounded == true) { jumpTimer = jumpDuration; }
@@ -76,12 +78,17 @@ public class BallControl : MonoBehaviour
     {
         if (collision.gameObject.tag == "DeathZone")
         {
-            transform.position = spawnLoc.position;
+            transform.position = spawnLoc;
+        }
+        else if (collision.gameObject.tag == "Checkpoint")
+        {
+            spawnLoc = collision.gameObject.transform.position;
+            collision.gameObject.GetComponent<Rotation>().rotX = .3f;
         }
         else if (collision.gameObject.tag == "Slide")
         {
             slideAcceleration = 0f;
-            vCam.m_Lens.FieldOfView = 40;
+            vCam.m_Lens.FieldOfView = defaultFoV;
         }
     }
 
@@ -103,7 +110,7 @@ public class BallControl : MonoBehaviour
         if (collision.gameObject.tag == "Slide")
         {
             slideAcceleration = 0f;
-            vCam.m_Lens.FieldOfView = 40;
+            vCam.m_Lens.FieldOfView = defaultFoV;
         }
     }
 }

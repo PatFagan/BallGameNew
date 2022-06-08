@@ -10,6 +10,7 @@ TagManager:
   - SidescrollerFlip
   - DeathZone
   - Slide
+  - Checkpoint
   layers:
   - Default
   - TransparentFX
