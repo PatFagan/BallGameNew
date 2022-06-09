@@ -76,7 +76,7 @@ public class BallControl : MonoBehaviour
             print(deathTimer);
         }
         else
-            deathTimer = 200f;
+            deathTimer = 350f;
 
         if (deathTimer < 0f)
             transform.position = spawnLoc;
@@ -91,7 +91,7 @@ public class BallControl : MonoBehaviour
         else if (collision.gameObject.tag == "Checkpoint")
         {
             spawnLoc = collision.gameObject.transform.position;
-            collision.gameObject.GetComponent<Rotation>().rotX = .3f;
+            collision.gameObject.GetComponent<Rotation>().rotY = .3f;
         }
         else if (collision.gameObject.tag == "Slide")
         {
