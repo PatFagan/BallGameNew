@@ -17,6 +17,7 @@ public class BallControl : MonoBehaviour
     float slideAcceleration;
     public CinemachineVirtualCamera vCam;
     public float defaultFoV;
+    float deathTimer;
 
     private void Start()
     {
@@ -68,10 +69,17 @@ public class BallControl : MonoBehaviour
         }
 
         // increase fall speed
-        if (rigidbody.velocity.y < -0.1)
+        if (rigidbody.velocity.y < -0.1 && isGrounded == false)
         {
             rigidbody.velocity += Vector3.up * Physics2D.gravity.y * (jumpForce / 1500f) * Time.deltaTime;
+            deathTimer--;
+            print(deathTimer);
         }
+        else
+            deathTimer = 200f;
+
+        if (deathTimer < 0f)
+            transform.position = spawnLoc;
     }
 
     void OnTriggerEnter(Collider collision)
@@ -98,7 +106,7 @@ public class BallControl : MonoBehaviour
         {
             if (slideAcceleration < 20f)
             {
-                vCam.m_Lens.FieldOfView += .1f;
+                vCam.m_Lens.FieldOfView += .05f;
                 slideAcceleration += .01f;
             }
             rigidbody.AddForce(Vector3.down * speed * 10f * slideAcceleration * Time.deltaTime);
